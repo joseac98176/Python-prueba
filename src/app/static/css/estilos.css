@@ -54,4 +54,25 @@ button{
     
 }
 
+.message{
+padding: 10px;
+border-radius: 8px;
+margin-bottom: 15px;
+font-weight: bold;
+}
 
+.mensaje.success{
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.mensaje.error{
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+select{
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}

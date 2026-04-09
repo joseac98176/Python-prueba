@@ -11,16 +11,27 @@
 
 <body>
     <header class="top">
-        <h1>Python en la Web</h1>
-        <p>Sets + in + if + sesión temporal</p>
+        <h1>Registro de usuarios</h1>
+        <p>Utilizando Flask + MySql </p>
     </header>
 
     <main class="container">
+        {% with message + get_flashed_messages(with_categories-true)%}
+                {% if message %}
+                {%for category, message in messages %}
+                <div class="mensaje {{ category }}">{{message}} </div>></div>
+                {% endfor %}
+                {% endif %}
+        
+        {%endwith%}
+
+        <!--Aquí se inyecta el contenido específico de cada vista-->
+        <!--Esto es lo de Jinja para que se visualice el HTML con Python-->
         {%block content%}{%endblock%}
     </main>
 
     <footer class="foot">
-        <small>Clase básica-sin base de datos</small>
+        <small>Proyecto con base de datos</small>
     </footer>
 </body>
 

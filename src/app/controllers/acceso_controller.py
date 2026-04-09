@@ -1,32 +1,36 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for
-from app.services.acceso_service import validar_acceso, normalizar_nombre
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from app.services.acceso_service import crear_usuario
 
 acceso_bp = Blueprint("acceso", __name__)
 
+
 @acceso_bp.route("/", methods=["GET"])
 def index():
-    intentos = session.get("intentos", 0)
-    ultimo = session.get("ultimo_nombre", "")
-    return render_template("index.html", intentos=intentos, ultimo=ultimo)
+    return render_template("index.html")
 
-@acceso_bp.route("/procesar", methods=["POST"])
-def procesar():
-    nombre = normalizar_nombre(request.form.get("nombre", ""))
+@acceso_bp.route("/registro", methods=["GET"])
+def vista_registro():
+    return render_template("registro.html")
 
-    session["intentos"] = session.get("intentos", 0) + 1
-    session["ultimo_nombre"] = nombre
+@acceso_bp.route("/registro", methods=["POST"])
+def procesar_registro():
+    nombre = request.form.get("nombre", "").strip()
+    correo = request.form.get("correo", "").strip()
+    clave = request.form.get("clave", "").strip()
+    rol = request.form.get("rol", "empleado").strip()
 
-    permitido, mensaje = validar_acceso(nombre)
+    exito, mensaje = crear_usuario(nombre, correo, clave, rol)
+
+    if exito:
+        flash(mensaje, "success")
+
+        return redirect(url_for("acceso.vista_registro"))
+
+    flash(mensaje, "error")
 
     return render_template(
-        "resultado.html",
+        "registro.html",
         nombre=nombre,
-        permitido=permitido,
-        mensaje=mensaje
+        correo=correo,
+        rol=rol
     )
-
-@acceso_bp.route("/reiniciar", methods=["POST"])
-def reiniciar():
-    session.clear()
-    return redirect(url_for("acceso.index"))
-
